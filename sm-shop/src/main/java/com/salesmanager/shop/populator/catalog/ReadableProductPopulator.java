@@ -24,6 +24,7 @@ import com.salesmanager.core.model.reference.language.Language;
 import com.salesmanager.shop.model.catalog.ReadableImage;
 import com.salesmanager.shop.model.catalog.manufacturer.ReadableManufacturer;
 import com.salesmanager.shop.model.catalog.product.ReadableProduct;
+import com.salesmanager.shop.utils.DateUtil;
 import com.salesmanager.shop.utils.ImageFilePath;
 
 
@@ -97,6 +98,10 @@ public class ReadableProductPopulator extends
 			target.setRefSku(source.getRefSku());
 			target.setSortOrder(source.getSortOrder());
 			
+			if(source.getDateAvailable() != null) {
+				target.setDateAvailable(DateUtil.formatDate(source.getDateAvailable()));
+			}
+			
 			if(source.getProductReviewAvg()!=null) {
 				double avg = source.getProductReviewAvg().doubleValue();
 				double rating = Math.round(avg * 2) / 2.0f;
@@ -110,6 +115,7 @@ public class ReadableProductPopulator extends
 				com.salesmanager.shop.model.catalog.product.ProductDescription tragetDescription = new com.salesmanager.shop.model.catalog.product.ProductDescription();
 				tragetDescription.setFriendlyUrl(description.getSeUrl());
 				tragetDescription.setName(description.getName());
+				tragetDescription.setId(description.getId());
 				if(!StringUtils.isBlank(description.getMetatagTitle())) {
 					tragetDescription.setTitle(description.getMetatagTitle());
 				} else {
@@ -118,7 +124,9 @@ public class ReadableProductPopulator extends
 				tragetDescription.setMetaDescription(description.getMetatagDescription());
 				tragetDescription.setDescription(description.getDescription());
 				tragetDescription.setHighlights(description.getProductHighlight());
+				tragetDescription.setLanguage(description.getLanguage().getCode());
 				target.setDescription(tragetDescription);
+				
 			}
 			
 			if(source.getManufacturer()!=null) {
@@ -133,47 +141,36 @@ public class ReadableProductPopulator extends
 				target.setManufacturer(manufacturerEntity);
 			}
 			
-			ProductImage image = source.getProductImage();
-			if(image!=null) {
-				ReadableImage rimg = new ReadableImage();
-				rimg.setImageName(image.getProductImage());
+			Set<ProductImage> images = source.getImages();
+			if(images!=null && images.size()>0) {
+				List<ReadableImage> imageList = new ArrayList<ReadableImage>();
 				
 				String contextPath = imageUtils.getContextPath();
-				StringBuilder imagePath = new StringBuilder();
-				imagePath.append(contextPath).append(imageUtils.buildProductImageUtils(store, source.getSku(), image.getProductImage()));
-
-				rimg.setImageUrl(imagePath.toString());
 				
-	
-				rimg.setId(image.getId());
-				target.setImage(rimg);
-				
-				//other images
-				Set<ProductImage> images = source.getImages();
-				if(images!=null && images.size()>0) {
-					List<ReadableImage> imageList = new ArrayList<ReadableImage>();
-					for(ProductImage img : images) {
-						ReadableImage prdImage = new ReadableImage();
-						prdImage.setImageName(img.getProductImage());
+				for(ProductImage img : images) {
+					ReadableImage prdImage = new ReadableImage();
+					prdImage.setImageName(img.getProductImage());
+					prdImage.setDefaultImage(img.isDefaultImage());
 
-						StringBuilder imgPath = new StringBuilder();
-						imgPath.append(contextPath).append(imageUtils.buildProductImageUtils(store, source.getSku(), img.getProductImage()));
+					StringBuilder imgPath = new StringBuilder();
+					imgPath.append(contextPath).append(imageUtils.buildProductImageUtils(store, source.getSku(), img.getProductImage()));
 
-						prdImage.setImageUrl(imgPath.toString());
-						prdImage.setId(img.getId());
-						prdImage.setImageType(img.getImageType());
-						if(img.getProductImageUrl()!=null){
-							prdImage.setExternalUrl(img.getProductImageUrl());
-						}
-						if(img.getImageType()==1 && img.getProductImageUrl()!=null) {//video
-							prdImage.setVideoUrl(img.getProductImageUrl());
-						}
-						imageList.add(prdImage);
+					prdImage.setImageUrl(imgPath.toString());
+					prdImage.setId(img.getId());
+					prdImage.setImageType(img.getImageType());
+					if(img.getProductImageUrl()!=null){
+						prdImage.setExternalUrl(img.getProductImageUrl());
 					}
-					target
-					.setImages(imageList);
+					if(img.getImageType()==1 && img.getProductImageUrl()!=null) {//video
+						prdImage.setVideoUrl(img.getProductImageUrl());
+					}
+					imageList.add(prdImage);
 				}
+				target
+				.setImages(imageList);
 			}
+			
+
 			
 			//remove products from invisible category -> set visible = false
 /*			Set<Category> categories = source.getCategories();
@@ -193,16 +190,15 @@ public class ReadableProductPopulator extends
 			
 	
 			target.setSku(source.getSku());
-			//target.setLanguage(language.getCode());
 	
 			FinalPrice price = pricingService.calculateProductPrice(source);
 
 			target.setFinalPrice(pricingService.getDisplayAmount(price.getFinalPrice(), store));
 			target.setPrice(price.getFinalPrice());
+			target.setOriginalPrice(pricingService.getDisplayAmount(price.getOriginalPrice(), store));
 	
 			if(price.isDiscounted()) {
 				target.setDiscounted(true);
-				target.setOriginalPrice(pricingService.getDisplayAmount(price.getOriginalPrice(), store));
 			}
 			
 			//availability

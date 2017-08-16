@@ -680,7 +680,7 @@ public class ProductApi {
 	 */
 	@RequestMapping(value = "/product/{id}", method=RequestMethod.GET)
 	@ResponseBody
-	public ReadableProduct get(@PathVariable final Long id, @RequestParam String lang, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public ReadableProduct get(@PathVariable final Long id, @RequestParam(value = "lang", required=false) String lang, HttpServletRequest request, HttpServletResponse response) throws Exception {
 	
 		MerchantStore merchantStore = merchantStoreService.getByCode(com.salesmanager.core.business.constants.Constants.DEFAULT_STORE);
 

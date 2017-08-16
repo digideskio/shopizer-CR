@@ -26,7 +26,7 @@ public class ProductEntity extends Product implements Serializable {
 	private int quantityOrderMinimum = 1;//default 1
 	private boolean productIsFree;
 	private boolean available;
-	private boolean visible;
+	private boolean visible = true;
 	private BigDecimal productLength;
 	private BigDecimal productWidth;
 	private BigDecimal productHeight;
