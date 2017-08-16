@@ -113,7 +113,7 @@ public class ProductApi {
 	@RequestMapping( value="/private/{store}/product", method=RequestMethod.POST)
 	@ResponseStatus(HttpStatus.CREATED)
 	@ResponseBody
-	public PersistableProduct createProduct(@PathVariable final String store, @Valid @RequestBody PersistableProduct product, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public PersistableProduct create(@Valid @RequestBody PersistableProduct product, HttpServletRequest request, HttpServletResponse response) throws Exception {
 
 		
 		try {
@@ -680,7 +680,7 @@ public class ProductApi {
 	 */
 	@RequestMapping(value = "/product/{id}", method=RequestMethod.GET)
 	@ResponseBody
-	public ReadableProduct getProduct(@PathVariable final Long id, @RequestParam String lang, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public ReadableProduct get(@PathVariable final Long id, @RequestParam String lang, HttpServletRequest request, HttpServletResponse response) throws Exception {
 	
 		MerchantStore merchantStore = merchantStoreService.getByCode(com.salesmanager.core.business.constants.Constants.DEFAULT_STORE);
 
