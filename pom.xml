@@ -146,6 +146,8 @@
 	  	<module>sm-shop</module>
 		<module>shopizer-canadapost</module>
 		<module>shopizer-shipping-distance-module</module>
+		<module>sm-market</module>
+		<module>sm-schedulerJobs</module>
 	</modules>
 
     <repositories>
