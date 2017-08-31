@@ -1,0 +1,6 @@
+- Add sm-schedulerJobs-0.0.1-SNAPSHOT.jar to shopizer/sm-shop/src/main/webapp/WEB-INF/lib
+- Copy tiles-admin-scheduler.xml to /WEB-INF/tiles/
+- Add tile entry to ShopApplicationConfiguration
+- Add SchedulerConfiguration.class to ShopApplicationConfiguration: @Import({ CoreApplicationConfiguration.class, SchedulerConfiguration.class})
+- Add entry <beans:value>classpath:bundles/scheduler</beans:value>  to shopizer-servlet-context.xml
+- Add entry dependency sm-schedulerJobs to sm-shop pom.xml 

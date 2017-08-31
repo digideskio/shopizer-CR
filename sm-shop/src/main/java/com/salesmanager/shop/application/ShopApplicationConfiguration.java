@@ -17,7 +17,7 @@ import com.salesmanager.core.business.configuration.CoreApplicationConfiguration
 @Configuration
 @ComponentScan({"com.salesmanager.shop","com.salesmanager.core.business"})
 @EnableAutoConfiguration
-@Import(CoreApplicationConfiguration.class)//import sm-core configurations
+@Import({ CoreApplicationConfiguration.class, MarketingConfiguration.class, SchedulerConfiguration.class })//import sm-core configurations
 @ImportResource("classpath:/spring/shopizer-shop-context.xml")
 @EnableWebSecurity
 public class ShopApplicationConfiguration extends WebMvcConfigurerAdapter{
@@ -28,7 +28,8 @@ public class ShopApplicationConfiguration extends WebMvcConfigurerAdapter{
     @Bean
     public TilesConfigurer tilesConfigurer(){
         TilesConfigurer tilesConfigurer = new TilesConfigurer();
-        tilesConfigurer.setDefinitions(new String[] {"/WEB-INF/tiles/tiles-admin.xml","/WEB-INF/tiles/tiles-shop.xml"});
+        tilesConfigurer.setDefinitions(new String[] { "/WEB-INF/tiles/tiles-admin.xml", "/WEB-INF/tiles/tiles-shop.xml",
+				"/WEB-INF/tiles/tiles-admin-marketing.xml", "/WEB-INF/tiles/tiles-admin-scheduler.xml" });
         tilesConfigurer.setCheckRefresh(true);
         return tilesConfigurer;
     }
